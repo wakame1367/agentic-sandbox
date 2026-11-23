@@ -1,0 +1,22 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: echo "pseudo-deploy to staging (auto)"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    # production environment has a required-reviewer protection rule,
+    # so this job pauses for human approval before running
+    environment: production
+    steps:
+      - run: echo "pseudo-deploy to production (after approval)"

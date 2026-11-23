@@ -1,0 +1,22 @@
+name: label-gate
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge-ready:
+    # Only honor the label when a human added it — bot/app senders are ignored.
+    if: >-
+      github.event.label.name == 'merge-ready'
+      && github.event.sender.type == 'User'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge (squash)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "${{ github.event.pull_request.number }}"

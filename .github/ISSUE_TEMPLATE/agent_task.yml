@@ -1,0 +1,49 @@
+name: エージェントタスク（spec標準形）
+description: エージェントに委譲する作業の標準フォーマット。意図・検証・エスカレーション条件を先に書く
+labels: ["agent-task"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: ゴール（意図）
+      description: 何が正しいかを実装手順ではなく振る舞いで書く。「〜できる」「〜になる」形の成功条件
+      placeholder: 例: ユーザーはチェックアウト時にクーポンコードを適用できる
+    validations:
+      required: true
+  - type: textarea
+    id: spec_clauses
+    attributes:
+      label: spec条項（ID化）
+      description: 採点基準となる条項をID付きで列挙。テスト・レビューは条項IDに対応づける
+      placeholder: "SPEC-01: 無効なクーポンはエラーになる\nSPEC-02: 割引は小計にのみ適用される"
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: 検証手段
+      description: 機械判定できる done の定義。どのテスト/チェックが条項を検証するか
+      placeholder: "SPEC-01 → tests/test_coupon.py::test_invalid\nE2E: チェックアウト画面でクーポン適用まで実際に流す"
+    validations:
+      required: true
+  - type: dropdown
+    id: escalation
+    attributes:
+      label: エスカレーション条件
+      options:
+        - 自律で完遂（失敗時のみ報告）
+        - 3回失敗したらエスカレート
+        - 着手前に計画の承認が必要
+      default: 1
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: リスク分類
+      options:
+        - 可逆（リポジトリ内で戻せる変更のみ）
+        - 不可逆を含む（外部副作用あり。要人間承認）
+      default: 0
+    validations:
+      required: true
