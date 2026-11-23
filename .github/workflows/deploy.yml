@@ -1,12 +1,18 @@
 name: deploy
 
+# NOTE: merges performed with GITHUB_TOKEN (e.g. label-gate auto-merge) do
+# not emit push events, so `pull_request.closed` is needed to catch them.
 on:
   push:
+    branches: [main]
+  pull_request:
+    types: [closed]
     branches: [main]
   workflow_dispatch:
 
 jobs:
   deploy-staging:
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     environment: staging
     steps:
